@@ -11,3 +11,13 @@ process A        free space        process B         free space
                         +---> Chosen if the process
                               has up to 10 space
 ```
+
+## 📦 Running
+
+```bash
+$ make
+```
+
+```bash
+$ ./bin/first-fit
+```
