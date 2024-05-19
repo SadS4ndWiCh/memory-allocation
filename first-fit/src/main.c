@@ -64,7 +64,7 @@ int Memory_addProcess(Memory* m, int procSize, char procName)
         return 0;
     }
 
-    while ((*currProcess) != NULL && (*currProcess)->procName != '-')
+    while ((*currProcess) != NULL && !Process_isEmpty(*currProcess))
     {
         currProcess = &(*currProcess)->next;
     }
@@ -130,16 +130,18 @@ int Memory_removeProcess(Memory* m, char procName)
 
     if (Process_isEmpty(cp->prev))
     {
-        Process* temp = cp->prev;
+        Process** temp = &cp->prev;
 
-        temp->procSize += cp->procSize;
-        temp->totalAUSize = Memory_sizeToAU(m, temp->procSize);
-        temp->endAU = cp->endAU;
+        cp->procSize += (*temp)->procSize;
+        cp->totalAUSize = Memory_sizeToAU(m, cp->procSize);
+        cp->startAU = (*temp)->startAU;
 
-        temp->next = cp->next;
-        if (cp->next != NULL) cp->next->prev = temp;
+        cp->prev = (*temp)->prev;
+        if (cp->prev != NULL) (*temp)->prev->next = cp;
 
-        Process_free(cp);
+        *temp = cp;
+
+        Process_free(*temp);
     }
 
     printf("[Memory_removeProcess]: Removed '%c' proccess\n", procName);
